@@ -1,0 +1,9 @@
+services:
+  web:
+    image: nginx:alpine
+    container_name: cont-inundacion 
+    restart: always
+    volumes:
+      - ./:/usr/share/nginx/html/
+    ports:
+      - "8000:80"

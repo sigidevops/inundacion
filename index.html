@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+    <h1>Inundación en Chalco</h1>
+    <div class="slidecontainer">
+        <img src="./imgs/001.png" alt="" id="img">
+        <input type="range" min="1" max="9" value="1" class="slider" id="myRange">
+        <p>Value: <span id="value"></span></p>
+        
+    </div>
+
+
+    <script>
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("value");
+
+        //output.innerHTML = slider.value;
+
+        slider.oninput = function () {
+            output.innerHTML = this.value;
+
+            var img = document.getElementById("img");
+            img.setAttribute("src", "./imgs/00" + this.value + ".png");
+        }
+    </script>
+
+</body>
+
+</html>
