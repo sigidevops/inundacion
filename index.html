@@ -27,7 +27,7 @@
 
 <body>
 
-    <h1>Inundación en Chalco: visualización espacio-temporal</h1>
+    <h1>Inundación en Chalco: visualización espacio-temporal del modelo 1</h1>
 
     <div id="map"></div>
 
@@ -65,46 +65,53 @@
             }).addTo(map)
         });
 
-        // var inundacionData = new L.GeoJSON.AJAX("./data/inundacion_merge_raster.geojson");
-        // console.log(inundacionData.features);
-        // var layerGroup = new L.LayerGroup();
-        // layerGroup.addTo(map);
+        let layers = L.layerGroup().addTo(map);
+        
+        $.getJSON("./data/chalco_inundacion_00.geojson", function (entData) {
+            L.geoJson(entData, {
+                onEachFeature: function (feature, layer) { },
+                weight: 3,
+                color: "#191970",
+                fillColor: "#191970",
+                fillOpacity: 1
+            }).addTo(layers)
+        });
 
-        // var slider = document.getElementById("myrange");
-        // var myLayer = document.getElementById("myrange");
+        var slider = document.getElementById("myrange");
+        var myLayer = document.getElementById("myrange");
 
-        // var myFeaturesMap = {};
+        var myFeaturesMap = {};
 
-        // slider.addEventListener("input", function () {
+        var myGeoJsonFeature = {};
 
-        //     layerGroup.removeLayer(inundacionData);
-        //     layerGroup.addLayer(inundacionData.features.properties[0]);            
-        // });
+        slider.addEventListener("input", function () {
 
-        $.getJSON("./data/inundacion_merge_raster.geojson", function (inundacionData) {
+            layers.clearLayers();
 
+            $.getJSON("./data/chalco_inundacion_0" + myLayer.value + ".geojson", function (inundacionData) {
 
-            var slider = document.getElementById("myrange");
-            var myLayer = document.getElementById("myrange");
+                var geoJsonFeature = inundacionData;
 
-            var myFeaturesMap = {};
-
-            slider.addEventListener("input", function () {
-
-                var geoJsonFeature = inundacionData.features[myLayer.value];
-
-                var myGeoJsonFeature = L.geoJson(geoJsonFeature, {
+                L.geoJson(geoJsonFeature, {
                     onEachFeature: function (feature, layer) {
                         myFeaturesMap[feature.properties] = geoJsonFeature;
                     },
                     weight: 3,
-                    color: getColor(myLayer.value),
-                    fillColor: getColor(myLayer.value),
+                    color: "#191970",
+                    fillColor: "#191970",
                     fillOpacity: 1
-                });
+                }).addTo(layers);
 
-                myGeoJsonFeature.remove();
-                myGeoJsonFeature.addTo(map);
+                console.log(myGeoJsonFeature)
+
+                // L.geoJSON(myGeoJsonFeature).addTo(map);
+
+                function show_geojson() {
+                    layers.clearLayers();                // Remove old GeoJSON
+                    let txt = document.getElementById("geojsontext").value;
+                    txt = JSON.parse(txt);
+                    L.geoJSON(txt).addTo(layers);        // Display new GeoJSON
+                }
 
                 function getColor(id) {
                     if (id == "0")
@@ -116,25 +123,10 @@
                     if (id == 3)
                         return "#BCBCBC";
                 };
-
-                function addNewFeatureToGeoJsonLayerGroup(newGeoJsonData) {
-                    myGeoJsonLayerGroup.addData(newGeoJsonData);
-                }
-
-                function updateFeature(updatedGeoJsonData) {
-                    deleteFeature(updatedGeoJsonData); // Remove the previously created layer.
-                    addNewFeatureToGeoJsonLayerGroup(updatedGeoJsonData); // Replace it by the new data.
-                }
-
-                function deleteFeature(deletedGeoJsonData) {
-                    var deletedFeature = myFeaturesMap[deletedGeoJsonData.properties];
-                    myGeoJsonLayerGroup.removeLayer(deletedFeature);
-                }
             });
 
 
         });
-
 
     </script>
 
