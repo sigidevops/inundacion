@@ -41,7 +41,7 @@
     <script>
         // load a tile layer
         var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 15,
+            maxZoom: 19,
             attribution: '© OpenStreetMap'
         });
 
@@ -56,8 +56,8 @@
             "OpenStreetMap": osm
         };
 
-        $.getJSON("./data/chalco_municipios.geojson", function (entData) {
-            L.geoJson(entData, {
+        $.getJSON("./data/chalco_municipios.geojson", function (munData) {
+            L.geoJson(munData, {
                 onEachFeature: function (feature, layer) { },
                 weight: 3,
                 color: "#000000",
@@ -65,10 +65,26 @@
             }).addTo(map)
         });
 
+        $.getJSON("./data/puntos_bombeo.geojson", function (bombeoData) {
+            L.geoJson(bombeoData, {
+                pointToLayer: function (feature, latlng) {
+                    var marker = L.marker(latlng);
+                    marker.bindPopup(
+                        'Nombre: ' + feature.properties.Name + '<br/>' +
+                        'Tipo: ' + feature.properties.Tipo + '<br/>' +
+                        'Adscripción: ' + feature.properties.adcripció + '<br/>' +
+                        'Operando: ' + feature.properties.operando + '<br/>' +
+                        'Ubicación: ' + feature.properties.ubicación + '<br/>'
+                    );
+                    return marker;
+                }
+            }).addTo(map)
+        });
+
         let layers = L.layerGroup().addTo(map);
-        
-        $.getJSON("./data/chalco_inundacion_00.geojson", function (entData) {
-            L.geoJson(entData, {
+
+        $.getJSON("./data/chalco_inundacion_00.geojson", function (inundacionData) {
+            L.geoJson(inundacionData, {
                 onEachFeature: function (feature, layer) { },
                 weight: 3,
                 color: "#191970",
@@ -102,10 +118,6 @@
                     fillOpacity: 1
                 }).addTo(layers);
 
-                console.log(myGeoJsonFeature)
-
-                // L.geoJSON(myGeoJsonFeature).addTo(map);
-
                 function show_geojson() {
                     layers.clearLayers();                // Remove old GeoJSON
                     let txt = document.getElementById("geojsontext").value;
@@ -126,6 +138,15 @@
             });
 
 
+        });
+
+        $.getJSON("./data/calles_bombeo.geojson", function (callesBombeoData) {
+            L.geoJson(callesBombeoData, {
+                onEachFeature: function (feature, layer) { },
+                weight: 4,
+                color: "brown",
+                fillOpacity: 1
+            }).addTo(map);
         });
 
     </script>
