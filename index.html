@@ -142,10 +142,17 @@
 
         $.getJSON("./data/calles_bombeo.geojson", function (callesBombeoData) {
             L.geoJson(callesBombeoData, {
-                onEachFeature: function (feature, layer) { },
                 weight: 4,
                 color: "brown",
-                fillOpacity: 1
+                fillOpacity: 1,
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(
+                        "Calle " + "<strong>" + feature.properties.Name + "</strong><br/>" +
+                        "Información general: " + "<strong>" + feature.properties.PopupInfo + "</strong><br/><br/>" +
+                        "Perfil de inundación: " + "<br>" + "'<a class=\"example-image-link\" href=\"" + feature.properties.ruta_foto + "\" + target=\"_blank\" data-lightbox=\"example-1\"><img class=\"example-image\"  src=\"" + feature.properties.ruta_foto + "\" height=\"150px\" width=\"250px\"/></a>';" + "<br/>" +
+                        "Haz click en la imagen para verla en una nueva ventana."
+                        )
+                }
             }).addTo(map);
         });
 
