@@ -147,11 +147,11 @@
                 fillOpacity: 1,
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(
-                        "Calle " + "<strong>" + feature.properties.Name + "</strong><br/>" +
-                        "Información general: " + "<strong>" + feature.properties.PopupInfo + "</strong><br/><br/>" +
-                        "Perfil de inundación: " + "<br>" + "'<a class=\"example-image-link\" href=\"" + feature.properties.ruta_foto + "\" + target=\"_blank\" data-lightbox=\"example-1\"><img class=\"example-image\"  src=\"" + feature.properties.ruta_foto + "\" height=\"150px\" width=\"250px\"/></a>';" + "<br/>" +
-                        "Haz click en la imagen para verla en una nueva ventana."
-                        )
+                        "<strong>Calle </strong>" + feature.properties.Name + "<br/>" +
+                        "<strong>Información general: </strong>" + feature.properties.PopupInfo + "<br/><br/>" +
+                        "<strong>Perfil de inundación: </strong>" + "<br>" + "'<a class=\"example-image-link\" href=\"" + feature.properties.ruta_foto + "\" + target=\"_blank\" data-lightbox=\"example-1\"><img class=\"example-image\"  src=\"" + feature.properties.ruta_foto + "\" height=\"150px\" width=\"250px\"/></a>';" + "<br/>" +
+                        "<i>Haz click en la imagen para verla en una nueva ventana.<i/>"
+                    )
                 }
             }).addTo(map);
         });
