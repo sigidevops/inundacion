@@ -3,33 +3,139 @@
 
 <head>
     <meta charset="UTF-8">
+    <title>Chalco Inundaciones</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"
+        integrity="sha512-Abr21JO2YqcJ03XGZRPuZSWKBhJpUAR6+2wH5zBeO4wAw4oksr8PRdF+BKIRsxvCdq+Mv4670rZ+dLnIyabbGw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.js"
+        integrity="sha512-eYE5o0mD7FFys0tVot8r4AnRXzVVXhjVpzNK+AcHkg4zNLvUAaCOJyLFKjmfpJMj6L/tuCzMN7LULBvNDhy5pA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.3.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js"></script>
 </head>
 
 <body>
 
-    <h1>Inundación en Chalco</h1>
+    <h1>Inundación en Chalco: visualización espacio-temporal</h1>
+
+    <div id="map"></div>
+
+    <br>
+
     <div class="slidecontainer">
-        <img src="./imgs/001.png" alt="" id="img">
-        <input type="range" min="1" max="9" value="1" class="slider" id="myRange">
+        <input type="range" min="0" max="8" value="0" class="slider" id="myrange">
         <p>Value: <span id="value"></span></p>
-        
     </div>
 
-
     <script>
-        var slider = document.getElementById("myRange");
-        var output = document.getElementById("value");
+        // load a tile layer
+        var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 15,
+            attribution: '© OpenStreetMap'
+        });
 
-        //output.innerHTML = slider.value;
+        // initialize the map
+        var map = L.map('map', {
+            center: [19.27, -98.90],
+            zoom: 14,
+            layers: [osm]
+        });
 
-        slider.oninput = function () {
-            output.innerHTML = this.value;
+        var baseMaps = {
+            "OpenStreetMap": osm
+        };
 
-            var img = document.getElementById("img");
-            img.setAttribute("src", "./imgs/00" + this.value + ".png");
-        }
+        $.getJSON("./data/chalco_municipios.geojson", function (entData) {
+            L.geoJson(entData, {
+                onEachFeature: function (feature, layer) { },
+                weight: 3,
+                color: "#000000",
+                fillOpacity: 0
+            }).addTo(map)
+        });
+
+        // var inundacionData = new L.GeoJSON.AJAX("./data/inundacion_merge_raster.geojson");
+        // console.log(inundacionData.features);
+        // var layerGroup = new L.LayerGroup();
+        // layerGroup.addTo(map);
+
+        // var slider = document.getElementById("myrange");
+        // var myLayer = document.getElementById("myrange");
+
+        // var myFeaturesMap = {};
+
+        // slider.addEventListener("input", function () {
+
+        //     layerGroup.removeLayer(inundacionData);
+        //     layerGroup.addLayer(inundacionData.features.properties[0]);            
+        // });
+
+        $.getJSON("./data/inundacion_merge_raster.geojson", function (inundacionData) {
+
+
+            var slider = document.getElementById("myrange");
+            var myLayer = document.getElementById("myrange");
+
+            var myFeaturesMap = {};
+
+            slider.addEventListener("input", function () {
+
+                var geoJsonFeature = inundacionData.features[myLayer.value];
+
+                var myGeoJsonFeature = L.geoJson(geoJsonFeature, {
+                    onEachFeature: function (feature, layer) {
+                        myFeaturesMap[feature.properties] = geoJsonFeature;
+                    },
+                    weight: 3,
+                    color: getColor(myLayer.value),
+                    fillColor: getColor(myLayer.value),
+                    fillOpacity: 1
+                });
+
+                myGeoJsonFeature.remove();
+                myGeoJsonFeature.addTo(map);
+
+                function getColor(id) {
+                    if (id == "0")
+                        return "#008000";
+                    if (id == 1)
+                        return "#FFDC00";
+                    if (id == 2)
+                        return "#FF0000";
+                    if (id == 3)
+                        return "#BCBCBC";
+                };
+
+                function addNewFeatureToGeoJsonLayerGroup(newGeoJsonData) {
+                    myGeoJsonLayerGroup.addData(newGeoJsonData);
+                }
+
+                function updateFeature(updatedGeoJsonData) {
+                    deleteFeature(updatedGeoJsonData); // Remove the previously created layer.
+                    addNewFeatureToGeoJsonLayerGroup(updatedGeoJsonData); // Replace it by the new data.
+                }
+
+                function deleteFeature(deletedGeoJsonData) {
+                    var deletedFeature = myFeaturesMap[deletedGeoJsonData.properties];
+                    myGeoJsonLayerGroup.removeLayer(deletedFeature);
+                }
+            });
+
+
+        });
+
+
     </script>
 
 </body>
