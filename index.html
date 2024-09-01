@@ -70,12 +70,14 @@
                 pointToLayer: function (feature, latlng) {
                     var marker = L.marker(latlng);
                     marker.bindPopup(
-                        'Nombre: ' + feature.properties.Name + '<br/>' +
-                        'Tipo: ' + feature.properties.Tipo + '<br/>' +
+                        'Nombre: ' + feature.properties.Tipo + '<br/>' +
+                        'Tipo: ' + feature.properties.tipo_1 + '<br/>' +
                         'Adscripción: ' + feature.properties.adcripció + '<br/>' +
                         'Operando: ' + feature.properties.operando + '<br/>' +
-                        'Ubicación: ' + feature.properties.ubicación + '<br/>'
+                        'Ubicación: ' + feature.properties.ubicación + '<br/>' +
+                        "<strong>Fotografía de bomba o bombeo: </strong>" + "<br>" + "'<a class=\"example-image-link\" href=\"./imgs/bombeo/" + feature.properties.nombre + ".png" + "\" + target=\"_blank\" data-lightbox=\"example-1\"><img class=\"example-image\"  src=\"./imgs/bombeo/" + feature.properties.nombre + ".png" + "\" height=\"150px\" width=\"250px\"/></a>';" + "<br/>"
                     );
+                    console.log("./imgs/bombeo/" + feature.properties.nombre + ".png")
                     return marker;
                 }
             }).addTo(map)
@@ -109,35 +111,40 @@
                 var geoJsonFeature = inundacionData;
 
                 L.geoJson(geoJsonFeature, {
-                    onEachFeature: function (feature, layer) {
-                        myFeaturesMap[feature.properties] = geoJsonFeature;
-                    },
+                    style: style,
+                    onEachFeature: onEachFeature,
+                }).addTo(layers);
+
+                function show_geojson() {
+                    layers.clearLayers(); // Remove old GeoJSON
+                }
+
+                function onEachFeature(feature, layer) {
+                    // myFeaturesMap[feature.properties] = geoJsonFeature;
+                    layer.on({
+                        slidecontainer: highlightFeature,
+                        //     mouseout: resetHighlight,
+                        //     click: zoomToFeature
+                    });
+                }
+            });
+
+            function style(feature) {
+                return {
                     weight: 3,
                     color: "#191970",
                     fillColor: "#191970",
                     fillOpacity: 1
-                }).addTo(layers);
-
-                function show_geojson() {
-                    layers.clearLayers();                // Remove old GeoJSON
-                    let txt = document.getElementById("geojsontext").value;
-                    txt = JSON.parse(txt);
-                    L.geoJSON(txt).addTo(layers);        // Display new GeoJSON
-                }
-
-                function getColor(id) {
-                    if (id == "0")
-                        return "#008000";
-                    if (id == 1)
-                        return "#FFDC00";
-                    if (id == 2)
-                        return "#FF0000";
-                    if (id == 3)
-                        return "#BCBCBC";
                 };
-            });
+            }
 
+            function highlightFeature(e) {
+                var layer = e.target;
 
+                info.update(layer.feature.properties);
+            }
+
+            
         });
 
         $.getJSON("./data/calles_bombeo.geojson", function (callesBombeoData) {
