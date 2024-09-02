@@ -176,7 +176,6 @@
 
                 info.update(layer.feature.properties);
             }
-
         });
 
         $.getJSON("./data/calles_bombeo.geojson", function (callesBombeoData) {
@@ -187,14 +186,13 @@
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(
                         "<strong>Calle </strong>" + feature.properties.Name + "<br/>" +
-                        "<strong>Información general: </strong>" + feature.properties.PopupInfo + "<br/><br/>" +
-                        "<strong>Perfil de inundación: </strong>" + "<br>" + "'<a class=\"example-image-link\" href=\"" + feature.properties.ruta_foto + "\" + target=\"_blank\" data-lightbox=\"example-1\"><img class=\"example-image\"  src=\"" + feature.properties.ruta_foto + "\" height=\"150px\" width=\"250px\"/></a>';" + "<br/>" +
-                        "<i>Haz click en la imagen para verla en una nueva ventana.<i/>"
+                        "<strong>Perfil de inundación: </strong>" + "<br>" + "'<a class=\"example-image-link\" href=\"" + feature.properties.Perfiles + "\" + target=\"_blank\" data-lightbox=\"example-1\"><img class=\"example-image\"  src=\"" + feature.properties.Perfiles + "\" height=\"150px\" width=\"250px\"/></a>';" + "<br/>" +
+                        "<i>Haz click en la imagen para verla en una nueva ventana.<i/>" + "<br/><br/>" +
+                        "<strong>Fotografías de la inundación tomadas el 27 de agosto: </strong>" + "<br>" + "'<a class=\"example-image-link\" href=\"" + feature.properties.ruta_foto + "\" + target=\"_blank\" data-lightbox=\"example-1\"><img class=\"example-image\"  src=\"" + feature.properties.ruta_foto + "\" height=\"150px\" width=\"250px\"/></a>';" + "<br/>"
                     )
                 }
             }).addTo(map);
         });
-
     </script>
 
 </body>
