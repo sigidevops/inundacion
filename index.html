@@ -99,8 +99,8 @@
             L.geoJson(inundacionData, {
                 onEachFeature: function (feature, layer) { },
                 weight: 3,
-                color: "#191970",
-                fillColor: "#191970",
+                color: "#87CEEB",
+                fillColor: "#87CEEB",
                 fillOpacity: 1
             }).addTo(layers)
         });
@@ -122,7 +122,7 @@
 
                 L.geoJson(geoJsonFeature, {
                     style: style,
-                    onEachFeature: onEachFeature,
+                    // onEachFeature: onEachFeature,
                 }).addTo(layers);
 
                 function show_geojson() {
@@ -139,11 +139,34 @@
                 }
             });
 
+            function getInundacionColor(IdSlider) {
+                if (IdSlider == 0)
+                    return "#87CEEB";
+                if (IdSlider == 1)
+                    return "#00BFFF";
+                if (IdSlider == 2)
+                    return "#1E90FF";
+                if (IdSlider == 3)
+                    return "#6495Ed";
+                if (IdSlider == 4)
+                    return "#6495ED";
+                if (IdSlider == 5)
+                    return "#4169E1";
+                if (IdSlider == 6)
+                    return "#0000FF";
+                if (IdSlider == 7)
+                    return "#0000CD";
+                if (IdSlider == 8)
+                    return "#000080";
+                if (IdSlider == 9)
+                    return "#191970";
+            }
+
             function style(feature) {
                 return {
                     weight: 3,
-                    color: "#191970",
-                    fillColor: "#191970",
+                    color: getInundacionColor(myLayer.value),
+                    fillColor: getInundacionColor(myLayer.value),
                     fillOpacity: 1
                 };
             }
