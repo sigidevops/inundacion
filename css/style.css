@@ -24,6 +24,10 @@
     margin: auto;
 }
 
+.slidecontainer > p {
+    text-align: center;
+}
+
 .slider {
     -webkit-appearance: none;
     width: 100%;
